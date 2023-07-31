@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>login</title>
+
+   <!-- custom css file link  -->
+   <link rel="stylesheet" href="css/style.css">
+   <style>
+      input{
+         text-align: center;
+      }
+   </style>
+</head>
+<body>
+
+<div id="message-container"></div>
+   
+<div class="form-container">
+
+   <form id="login-form">
+      <h3>تسجيل الدخول</h3>
+      <input type="email" name="email" required placeholder="البريد الالكتروني" class="box">
+      <input type="password" name="password" required placeholder="كلمة المرور" class="box">
+      <input type="submit" name="submit" class="btn" value="تسجيل الدخول">
+      <p>هل تملك حساب بالفعل؟ <a href="register.php"> حساب جديد</a></p>
+   </form>
+
+</div>
+
+<!-- JavaScript Code -->
+<script>
+   const messageContainer = document.getElementById('message-container');
+   const loginForm = document.getElementById('login-form');
+
+   loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(loginForm);
+
+      fetch('login.php', {
+         method: 'POST',
+         body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+         if (data.success) {
+            window.location.href = 'index.php';
+         } else {
+            const message = document.createElement('div');
+            message.className = 'message';
+            message.textContent = 'كلمة المرور أو البريد الإلكتروني غير صحيحة!';
+            messageContainer.appendChild(message);
+
+            setTimeout(() => {
+               message.remove();
+            }, 3000);
+         }
+      })
+      .catch(error => {
+         console.error('Error:', error);
+         const message = document.createElement('div');
+         message.className = 'message';
+         message.textContent = 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى لاحقًا.';
+         messageContainer.appendChild(message);
+
+         setTimeout(() => {
+            message.remove();
+         }, 3000);
+      });
+   });
+</script>
+
+</body>
+</html>
